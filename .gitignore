@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Neovim-debugger
+.gdb.break
+.gdb.file
