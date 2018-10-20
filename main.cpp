@@ -36,11 +36,11 @@ std::unique_ptr<arangodb::fuerte::Response> p_add(std::shared_ptr<arangodb::fuer
   return c->sendRequest(std::move(request));
 }
 
-// void del(){
-//   auto request = arangodb::fuerte::createRequest(
-//         arangodb::fuerte::RestVerb::Delete, "/_api/collection/testobi");
-//   auto result = connection->sendRequest(std::move(request));
-// }
+std::unique_ptr<arangodb::fuerte::Response> del(std::shared_ptr<arangodb::fuerte::Connection> connection, std::string key){
+  auto request = arangodb::fuerte::createRequest(
+      arangodb::fuerte::RestVerb::Delete, "/_api/document/person/" + key);
+  return connection->sendRequest(std::move(request));
+}
 
 int main(){
   arangodb::fuerte::EventLoopService eventLoopService;
@@ -53,20 +53,23 @@ int main(){
   std::vector<Person> persons;
 
   for (auto const& it : arangodb::velocypack::ArrayIterator(slice)) {
-    Person person(it.get("first_name").copyString(),
+    Person person(it.get("_key").copyString(), it.get("first_name").copyString(),
         it.get("last_name").copyString());
     persons.push_back(person);
     std::cout << person.first_name << std::endl;
     std::cout << person.last_name << std::endl;
   }
 
-  Person p("Pierre", "Lavoie");
+  Person p("", "Pierre", "Lavoie");
 
   conn = initConnection(eventLoopService);
   auto result2 = p_add(conn, p);
 
-  std::cout<< arangodb::fuerte::to_string(*result2) << std::endl;
 
+  std::cout<< arangodb::fuerte::to_string(*result2) << std::endl;
+  std::cout << arangodb::fuerte::to_string(result2->slices().front()) << std::endl;
+
+  p.key = result2->slices().front().get("_key").copyString();
   result = request(conn, "FOR p IN person RETURN p");
 
   slice  =  result->slices().front().get("result");
@@ -74,10 +77,14 @@ int main(){
   persons.clear();
 
   for (auto const& it : arangodb::velocypack::ArrayIterator(slice)) {
-    Person person(it.get("first_name").copyString(),
+    Person person(it.get("_key").copyString(), it.get("first_name").copyString(),
         it.get("last_name").copyString());
     persons.push_back(person);
     std::cout << person.first_name << std::endl;
     std::cout << person.last_name << std::endl;
   }
+
+  auto result3 = del(conn, p.key);
+  std::cout<< arangodb::fuerte::to_string(*result3) << std::endl;
+  std::cout << arangodb::fuerte::to_string(result3->slices().front()) << std::endl;
 }
