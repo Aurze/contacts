@@ -34,3 +34,5 @@
 # Neovim-debugger
 .gdb.break
 .gdb.file
+
+build/
