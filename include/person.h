@@ -10,6 +10,7 @@ class Person {
    std::string first_name;
    std::string last_name;
 
+   Person() {}
    Person(std::string k, std::string f, std::string l)
        : key(k), first_name(f), last_name(l) {}
 };
