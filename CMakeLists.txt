@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10)
 
 project(libcontacts
   VERSION 0.1
@@ -41,6 +41,9 @@ find_package(Velocypack)
 if (NOT ${VELOCYPACK_FOUND})
   message(FATAL_ERROR "Velocypack not found. Clone from https://github.com/arangodb/velocypack and install it")
 endif()
+
+include(FindFuerte)
+find_package(Fuerte)
 
 include(ECMEnableSanitizers)
 
@@ -106,7 +109,7 @@ target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CM
   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
 target_link_libraries(libcontacts
-  fuerte
+  ${FUERTE_LIBRARIES}
   ${VELOCYPACK_LIBRARIES}
   ${CURL_LIBRARIES}
   ${Boost_LIBRARIES}
