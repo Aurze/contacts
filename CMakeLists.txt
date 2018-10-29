@@ -134,8 +134,15 @@ install(TARGETS ${LIBRARY_TARGET_NAME}
   PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_TARGET_NAME}" COMPONENT dev)
 
 
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("libcontactsConfigVersion.cmake"
+  VERSION 0.1
+  COMPATIBILITY SameMajorVersion
+  )
 
-
+install(FILES "cmake/libcontactsConfig.cmake"
+  DESTINATION lib/cmake/libcontacts
+  )
 
 
 
