@@ -127,12 +127,17 @@ target_link_libraries(libcontacts
 
 # Specify installation targets, typology and destination folders.
 install(TARGETS ${LIBRARY_TARGET_NAME}
-  EXPORT  ${PROJECT_NAME}
+  EXPORT  ${LIBRARY_TARGET_NAME}Targets
   LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT shlib
   ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT lib
   RUNTIME       DESTINATION "${CMAKE_INSTALL_BINDIR}"                            COMPONENT bin
   PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_TARGET_NAME}" COMPONENT dev)
 
+install(EXPORT ${LIBRARY_TARGET_NAME}Targets
+  FILE ${LIBRARY_TARGET_NAME}Targets.cmake
+  NAMESPACE libcontacts::
+  DESTINATION lib/cmake/libcontacts
+  )
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file("libcontactsConfigVersion.cmake"
